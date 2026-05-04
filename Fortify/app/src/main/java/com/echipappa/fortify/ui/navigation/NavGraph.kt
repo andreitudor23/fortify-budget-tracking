@@ -24,6 +24,7 @@ object Routes {
     const val RISK = "risk"
     const val TIPS = "tips"
     const val ADD_ACCOUNT = "add_account"
+    const val SIGN_UP = "sign_up"
 }
 
 @Composable
@@ -34,8 +35,15 @@ fun NavGraph(navController: NavHostController) {
     ) {
         composable(Routes.WELCOME) {
             WelcomeScreen(
-                onCreateAccount = { navController.navigate(Routes.EMAIL_VERIFICATION) },
+                onCreateAccount = { navController.navigate(Routes.SIGN_UP) },
                 onSignIn = { navController.navigate(Routes.SIGN_IN) }
+            )
+        }
+        composable(Routes.SIGN_UP) {
+            SignUpScreen(
+                onSignUp = { navController.navigate(Routes.EMAIL_VERIFICATION) },
+                onSignIn = { navController.navigate(Routes.SIGN_IN) },
+                onBack = { navController.popBackStack() }
             )
         }
         composable(Routes.SIGN_IN) {
