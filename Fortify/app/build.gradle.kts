@@ -55,4 +55,21 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Navigation Compose
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    // Room Database
+        implementation("androidx.room:room-runtime:2.6.1")
+        implementation("androidx.room:room-ktx:2.6.1")
+        annotationProcessor("androidx.room:room-compiler:2.6.1")
+
+    // ViewModel + Lifecycle Compose
+        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+
+    // Coroutines
+        implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // MPAndroidChart (pentru grafice)
+        implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
