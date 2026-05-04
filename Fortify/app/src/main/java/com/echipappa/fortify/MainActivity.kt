@@ -15,6 +15,7 @@ import com.echipappa.fortify.ui.auth.BiometricScreen
 import com.echipappa.fortify.ui.dashboard.DashboardScreen
 import com.echipappa.fortify.ui.risk.RiskScreen
 import com.echipappa.fortify.ui.subscriptions.SubscriptionsScreen
+import com.echipappa.fortify.ui.tips.TipsScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FortifyTheme {
-                RiskScreen()
+                TipsScreen()
             }
         }
     }
