@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.echipappa.fortify.ui.accounts.AccountsScreen
+import com.echipappa.fortify.ui.addaccount.AddAccountScreen
 import com.echipappa.fortify.ui.auth.WelcomeScreen
 import com.echipappa.fortify.ui.theme.FortifyTheme
 import com.echipappa.fortify.ui.auth.SignInScreen
@@ -24,7 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FortifyTheme {
-                TipsScreen()
+                AddAccountScreen()
             }
         }
     }
