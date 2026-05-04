@@ -7,6 +7,8 @@ import androidx.activity.enableEdgeToEdge
 import com.echipappa.fortify.ui.auth.WelcomeScreen
 import com.echipappa.fortify.ui.theme.FortifyTheme
 import com.echipappa.fortify.ui.auth.SignInScreen
+import com.echipappa.fortify.ui.auth.ForgotPasswordScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -14,7 +16,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FortifyTheme {
-                SignInScreen()
+                ForgotPasswordScreen()
             }
         }
     }
