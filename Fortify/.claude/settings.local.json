@@ -11,7 +11,8 @@
       "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\auth\\\\BiometricScreen.kt\")",
       "Bash(Write-Output \"Deleted\")",
       "Bash(claude doctor *)",
-      "PowerShell(claude doctor *)"
+      "PowerShell(claude doctor *)",
+      "Bash(Test-Path *)"
     ]
   }
 }
