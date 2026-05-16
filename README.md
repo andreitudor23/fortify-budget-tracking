@@ -4,14 +4,6 @@ A clean, minimal Android app for tracking your digital subscriptions, managing c
 
 ---
 
-## Screenshots
-
-![Welcome Screen](screenshots/welcome.png) ![Dashboard](screenshots/dashboard.png) ![Subscriptions](screenshots/subscriptions.png) ![Accounts](screenshots/accounts.png)
-
-> _Screenshots taken on Pixel 6 emulator, API 37_
-
----
-
 ## Features
 
 - 🔐 **Authentication** — Register and log in with email & password, stored securely on-device
