@@ -3,11 +3,14 @@ package com.echipappa.fortify.ui.addaccount
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,11 +19,30 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.echipappa.fortify.ui.theme.*
-import androidx.compose.foundation.horizontalScroll
+import com.echipappa.fortify.viewmodel.AccountViewModel
+
+private fun iconForPlatform(name: String): String = when (name.trim().lowercase()) {
+    "netflix" -> "🎬"
+    "spotify" -> "🎵"
+    "apple", "icloud", "apple music", "apple tv" -> "🍎"
+    "youtube", "youtube premium" -> "▶️"
+    "amazon", "amazon prime", "prime" -> "📦"
+    "github" -> "💻"
+    "notion" -> "📝"
+    "slack" -> "💬"
+    "adobe", "adobe cc", "adobe creative cloud" -> "🎨"
+    "linkedin", "linkedin premium" -> "💼"
+    "twitter", "twitter/x", "x" -> "🐦"
+    "google", "google one" -> "🔵"
+    "disney", "disney+" -> "🏰"
+    "hbo", "max", "hbo max" -> "📺"
+    "reddit" -> "🤖"
+    else -> "🌐"
+}
 
 data class PopularService(
     val name: String,
@@ -28,37 +50,39 @@ data class PopularService(
     val category: String
 )
 
+private val popularServices = listOf(
+    PopularService("Google", "🔵", "Platform"),
+    PopularService("Netflix", "🎬", "Entertainment"),
+    PopularService("Spotify", "🎵", "Entertainment"),
+    PopularService("Apple", "🍎", "Platform"),
+    PopularService("GitHub", "💻", "Dev"),
+    PopularService("Notion", "📝", "Productivity"),
+    PopularService("Slack", "💬", "Productivity"),
+    PopularService("Adobe CC", "🎨", "Productivity"),
+    PopularService("YouTube", "▶️", "Entertainment"),
+    PopularService("LinkedIn", "💼", "Platform"),
+    PopularService("Twitter/X", "🐦", "Platform"),
+    PopularService("Amazon", "📦", "Platform"),
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddAccountScreen(
     onAddAccount: () -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    accountViewModel: AccountViewModel = viewModel()
 ) {
     var serviceName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var monthlyCost by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf("All") }
+    var showSuccessMessage by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
 
     val categories = listOf("All", "Productivity", "Entertainment", "Platform", "Dev")
 
-    val popularServices = listOf(
-        PopularService("Google", "🔵", "Platform"),
-        PopularService("Netflix", "🎬", "Entertainment"),
-        PopularService("Spotify", "🎵", "Entertainment"),
-        PopularService("Apple", "🍎", "Platform"),
-        PopularService("GitHub", "💻", "Dev"),
-        PopularService("Notion", "📝", "Productivity"),
-        PopularService("Slack", "💬", "Productivity"),
-        PopularService("Adobe CC", "🎨", "Productivity"),
-        PopularService("YouTube", "▶️", "Entertainment"),
-        PopularService("LinkedIn", "💼", "Platform"),
-        PopularService("Twitter/X", "🐦", "Platform"),
-        PopularService("Amazon", "📦", "Platform"),
-    )
-
-    val filteredServices = if (selectedCategory == "All") {
-        popularServices
-    } else {
-        popularServices.filter { it.category == selectedCategory }
+    val filteredServices = popularServices.filter { service ->
+        (selectedCategory == "All" || service.category == selectedCategory) &&
+            (searchQuery.isBlank() || service.name.contains(searchQuery, ignoreCase = true))
     }
 
     Box(
@@ -72,23 +96,35 @@ fun AddAccountScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(24.dp)
         ) {
-            Spacer(modifier = Modifier.height(48.dp))
+            Spacer(Modifier.height(48.dp))
 
             Text(
-                text = "Add Account",
+                "Add Account",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = TextPrimary
             )
-            Text(
-                text = "Connect new services to track your digital presence",
-                fontSize = 16.sp,
-                color = TextSecondary
-            )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-            // Add Manually section
+            if (showSuccessMessage) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF0A2A1A))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        "Account added successfully",
+                        fontSize = 14.sp,
+                        color = SuccessGreen,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(Modifier.height(16.dp))
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,16 +133,20 @@ fun AddAccountScreen(
                     .padding(20.dp)
             ) {
                 Text(
-                    text = "Add Manually",
+                    "Add Manually",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = TextPrimary
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
-                Text("Service Name", fontSize = 14.sp, color = TextSecondary)
-                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Service Name", fontSize = 14.sp, color = TextSecondary)
+                    Spacer(Modifier.width(8.dp))
+                    Text(iconForPlatform(serviceName), fontSize = 16.sp)
+                }
+                Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = serviceName,
                     onValueChange = { serviceName = it },
@@ -124,10 +164,10 @@ fun AddAccountScreen(
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(Modifier.height(12.dp))
 
                 Text("Email Address", fontSize = 14.sp, color = TextSecondary)
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
@@ -146,36 +186,28 @@ fun AddAccountScreen(
                     singleLine = true
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Text("Monthly Cost (Optional)", fontSize = 14.sp, color = TextSecondary)
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(
-                    value = monthlyCost,
-                    onValueChange = { monthlyCost = it },
-                    placeholder = { Text("0.00", color = TextMuted) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = ElectricBlue,
-                        unfocusedBorderColor = NavyCardLight,
-                        focusedContainerColor = NavyDark,
-                        unfocusedContainerColor = NavyDark,
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary
-                    ),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                    singleLine = true
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(Modifier.height(16.dp))
 
                 Button(
-                    onClick = onAddAccount,
+                    onClick = {
+                        if (serviceName.isNotEmpty() && email.isNotEmpty()) {
+                            accountViewModel.addAccount(
+                                platform = serviceName.trim(),
+                                icon = iconForPlatform(serviceName),
+                                email = email.trim()
+                            )
+                            serviceName = ""
+                            email = ""
+                            showSuccessMessage = true
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (serviceName.isNotEmpty() && email.isNotEmpty())
+                            ElectricBlue else NavyCardLight
+                    ),
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
@@ -187,22 +219,20 @@ fun AddAccountScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(Modifier.height(24.dp))
 
-            // Popular Services section
             Text(
-                text = "Popular Services",
+                "Popular Services",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = TextPrimary
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // Search
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = searchQuery,
+                onValueChange = { searchQuery = it },
                 placeholder = { Text("Search services...", color = TextMuted) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -214,13 +244,19 @@ fun AddAccountScreen(
                     focusedTextColor = TextPrimary,
                     unfocusedTextColor = TextPrimary
                 ),
-                leadingIcon = { Text("🔍", fontSize = 16.sp) },
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = TextMuted,
+                        modifier = Modifier.size(20.dp)
+                    )
+                },
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // Category filters
             Row(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -249,9 +285,8 @@ fun AddAccountScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(Modifier.height(12.dp))
 
-            // Services grid
             filteredServices.chunked(2).forEach { rowServices ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -260,28 +295,33 @@ fun AddAccountScreen(
                     rowServices.forEach { service ->
                         ServiceCard(
                             service = service,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
+                            onClick = { serviceName = service.name }
                         )
                     }
                     if (rowServices.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
+                        Spacer(Modifier.weight(1f))
                     }
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(Modifier.height(10.dp))
             }
 
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(Modifier.height(80.dp))
         }
     }
 }
 
 @Composable
-fun ServiceCard(service: PopularService, modifier: Modifier = Modifier) {
+fun ServiceCard(
+    service: PopularService,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .background(NavyCard)
-            .clickable { }
+            .clickable { onClick() }
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -294,20 +334,12 @@ fun ServiceCard(service: PopularService, modifier: Modifier = Modifier) {
         ) {
             Text(service.icon, fontSize = 24.sp)
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(Modifier.height(8.dp))
         Text(
             text = service.name,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium,
             color = TextPrimary
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AddAccountScreenPreview() {
-    FortifyTheme {
-        AddAccountScreen()
     }
 }

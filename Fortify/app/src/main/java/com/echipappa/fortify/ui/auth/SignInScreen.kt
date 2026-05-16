@@ -1,7 +1,6 @@
 package com.echipappa.fortify.ui.auth
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,14 +22,13 @@ import com.echipappa.fortify.ui.theme.*
 
 @Composable
 fun SignInScreen(
-    onSignIn: () -> Unit = {},
-    onForgotPassword: () -> Unit = {},
-    onBack: () -> Unit = {}
+    onSignIn: (String, String) -> Unit = { _, _ -> },
+    onBack: () -> Unit = {},
+    errorMessage: String = ""
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    var rememberMe by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -44,7 +42,6 @@ fun SignInScreen(
         ) {
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Back button
             TextButton(
                 onClick = onBack,
                 contentPadding = PaddingValues(0.dp)
@@ -54,7 +51,6 @@ fun SignInScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Logo
             Box(
                 modifier = Modifier
                     .size(56.dp)
@@ -63,7 +59,12 @@ fun SignInScreen(
                     .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🛡", fontSize = 28.sp)
+                Text(
+                    text = "F",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -89,7 +90,6 @@ fun SignInScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            // Email field
             Text("Email", fontSize = 14.sp, color = TextSecondary, fontWeight = FontWeight.Medium)
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
@@ -107,26 +107,12 @@ fun SignInScreen(
                     unfocusedTextColor = TextPrimary
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true,
-                leadingIcon = {
-                    Text("✉", fontSize = 18.sp)
-                }
+                singleLine = true
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password field
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text("Password", fontSize = 14.sp, color = TextSecondary, fontWeight = FontWeight.Medium)
-                TextButton(onClick = onForgotPassword, contentPadding = PaddingValues(0.dp)) {
-                    Text("Forgot?", fontSize = 14.sp, color = ElectricBlue)
-                }
-            }
-
+            Text("Password", fontSize = 14.sp, color = TextSecondary, fontWeight = FontWeight.Medium)
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(
@@ -146,37 +132,39 @@ fun SignInScreen(
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                 singleLine = true,
-                leadingIcon = { Text("🔒", fontSize = 18.sp) },
                 trailingIcon = {
                     TextButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Text(if (passwordVisible) "👁" else "👁", fontSize = 18.sp)
+                        Text(
+                            if (passwordVisible) "Hide" else "Show",
+                            fontSize = 12.sp,
+                            color = TextSecondary
+                        )
                     }
                 }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Remember me
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = rememberMe,
-                    onCheckedChange = { rememberMe = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = ElectricBlue,
-                        uncheckedColor = TextSecondary
-                    )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Remember me", fontSize = 14.sp, color = TextSecondary)
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Sign In button
+            if (errorMessage.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF2A0A0A))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = errorMessage,
+                        fontSize = 14.sp,
+                        color = DangerRed,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
             Button(
-                onClick = onSignIn,
+                onClick = { onSignIn(email, password) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
@@ -185,47 +173,7 @@ fun SignInScreen(
             ) {
                 Text("Sign In", fontSize = 16.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Divider
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = NavyCardLight)
-                Text("  Or continue with  ", fontSize = 13.sp, color = TextMuted)
-                HorizontalDivider(modifier = Modifier.weight(1f), color = NavyCardLight)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Social buttons
-            SocialButton("🔍", "Continue with Google") {}
-            Spacer(modifier = Modifier.height(12.dp))
-            SocialButton("🍎", "Continue with Apple") {}
-            Spacer(modifier = Modifier.height(12.dp))
-            SocialButton("👆", "Use Biometric Login") {}
         }
-    }
-}
-
-@Composable
-fun SocialButton(icon: String, text: String, onClick: () -> Unit) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp),
-        shape = RoundedCornerShape(14.dp),
-        border = androidx.compose.foundation.BorderStroke(1.dp, NavyCardLight),
-        colors = ButtonDefaults.outlinedButtonColors(
-            containerColor = NavyCard
-        )
-    ) {
-        Text(icon, fontSize = 20.sp)
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(text, fontSize = 15.sp, color = TextPrimary, fontWeight = FontWeight.Medium)
     }
 }
 

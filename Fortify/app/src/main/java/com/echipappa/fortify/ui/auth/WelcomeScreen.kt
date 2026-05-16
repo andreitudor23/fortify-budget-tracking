@@ -3,6 +3,11 @@ package com.echipappa.fortify.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,24 +41,25 @@ fun WelcomeScreen(
         ) {
             Spacer(modifier = Modifier.height(60.dp))
 
-            // Logo
             Box(
                 modifier = Modifier
                     .size(72.dp)
                     .clip(RoundedCornerShape(20.dp))
                     .background(
-                        Brush.linearGradient(
-                            colors = listOf(ElectricBlue, ElectricBlueDark)
-                        )
+                        Brush.linearGradient(colors = listOf(ElectricBlue, ElectricBlueDark))
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🛡", fontSize = 36.sp)
+                Text(
+                    text = "F",
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Title
             Text(
                 text = "Welcome to FORTIFY",
                 fontSize = 28.sp,
@@ -61,37 +68,24 @@ fun WelcomeScreen(
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Take control of your digital presence",
-                fontSize = 16.sp,
-                color = TextSecondary,
-                textAlign = TextAlign.Center
-            )
-
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Feature cards
-            FeatureCard("📊", "Track Everything", "All your subscriptions and accounts in one place")
+            FeatureCard(Icons.Default.List, "Track Everything", "All your subscriptions and accounts in one place")
             Spacer(modifier = Modifier.height(12.dp))
-            FeatureCard("📈", "Smart Analytics", "See where your money goes and optimize spending")
+            FeatureCard(Icons.Default.BarChart, "Smart Analytics", "See where your money goes and optimize spending")
             Spacer(modifier = Modifier.height(12.dp))
-            FeatureCard("👁", "Digital Security", "Monitor risks and protect your online presence")
+            FeatureCard(Icons.Default.Favorite, "Budget Health", "Monitor unused subscriptions and reduce waste")
             Spacer(modifier = Modifier.height(12.dp))
-            FeatureCard("🔒", "Private & Secure", "Your data is encrypted and never shared")
+            FeatureCard(Icons.Default.Lock, "Private & Secure", "Your data is stored locally on your device")
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Create Account button
             Button(
                 onClick = onCreateAccount,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = ElectricBlue
-                ),
+                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
                 shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
@@ -104,7 +98,6 @@ fun WelcomeScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Sign In button
             TextButton(
                 onClick = onSignIn,
                 modifier = Modifier
@@ -125,7 +118,7 @@ fun WelcomeScreen(
 }
 
 @Composable
-fun FeatureCard(icon: String, title: String, description: String) {
+fun FeatureCard(icon: ImageVector, title: String, description: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,24 +134,20 @@ fun FeatureCard(icon: String, title: String, description: String) {
                 .background(NavyCardLight),
             contentAlignment = Alignment.Center
         ) {
-            Text(icon, fontSize = 20.sp)
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = ElectricBlue,
+                modifier = Modifier.size(22.dp)
+            )
         }
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Column {
-            Text(
-                text = title,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = TextPrimary
-            )
+            Text(text = title, fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = TextPrimary)
             Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = description,
-                fontSize = 13.sp,
-                color = TextSecondary
-            )
+            Text(text = description, fontSize = 13.sp, color = TextSecondary)
         }
     }
 }

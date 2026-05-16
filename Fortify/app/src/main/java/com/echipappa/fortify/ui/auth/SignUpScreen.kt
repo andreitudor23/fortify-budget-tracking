@@ -24,9 +24,10 @@ import com.echipappa.fortify.ui.theme.*
 
 @Composable
 fun SignUpScreen(
-    onSignUp: () -> Unit = {},
     onSignIn: () -> Unit = {},
-    onBack: () -> Unit = {}
+    onBack: () -> Unit = {},
+    onRegister: (String, String, String) -> Unit = { _, _, _ -> },
+    errorMessage: String = ""
 ) {
     var fullName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
@@ -34,7 +35,6 @@ fun SignUpScreen(
     var confirmPassword by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     var confirmPasswordVisible by remember { mutableStateOf(false) }
-    var acceptedTerms by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -68,7 +68,12 @@ fun SignUpScreen(
                     .align(Alignment.CenterHorizontally),
                 contentAlignment = Alignment.Center
             ) {
-                Text("🛡", fontSize = 28.sp)
+                Text(
+                    text = "F",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -111,7 +116,6 @@ fun SignUpScreen(
                     focusedTextColor = TextPrimary,
                     unfocusedTextColor = TextPrimary
                 ),
-                leadingIcon = { Text("👤", fontSize = 18.sp) },
                 singleLine = true
             )
 
@@ -135,7 +139,6 @@ fun SignUpScreen(
                     unfocusedTextColor = TextPrimary
                 ),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                leadingIcon = { Text("✉", fontSize = 18.sp) },
                 singleLine = true
             )
 
@@ -160,10 +163,9 @@ fun SignUpScreen(
                 ),
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                leadingIcon = { Text("🔒", fontSize = 18.sp) },
                 trailingIcon = {
                     TextButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Text(if (passwordVisible) "👁" else "👁", fontSize = 18.sp)
+                        Text(if (passwordVisible) "Hide" else "Show", fontSize = 12.sp, color = TextSecondary)
                     }
                 },
                 singleLine = true
@@ -190,10 +192,9 @@ fun SignUpScreen(
                 ),
                 visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                leadingIcon = { Text("🔒", fontSize = 18.sp) },
                 trailingIcon = {
                     TextButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                        Text(if (confirmPasswordVisible) "👁" else "👁", fontSize = 18.sp)
+                        Text(if (confirmPasswordVisible) "Hide" else "Show", fontSize = 12.sp, color = TextSecondary)
                     }
                 },
                 singleLine = true
@@ -210,43 +211,39 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Terms
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Checkbox(
-                    checked = acceptedTerms,
-                    onCheckedChange = { acceptedTerms = it },
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = ElectricBlue,
-                        uncheckedColor = TextSecondary
-                    )
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "I agree to the ",
-                    fontSize = 14.sp,
-                    color = TextSecondary
-                )
-                Text(
-                    "Terms & Privacy Policy",
-                    fontSize = 14.sp,
-                    color = ElectricBlue,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
+
+            if (errorMessage.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFF2A0A0A))
+                        .padding(12.dp)
+                ) {
+                    Text(
+                        text = errorMessage,
+                        fontSize = 14.sp,
+                        color = DangerRed,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
 
             // Sign Up button
             Button(
-                onClick = onSignUp,
+                onClick = {
+                    if (email.isNotEmpty() && password.isNotEmpty()) {
+                        onRegister(fullName, email, password)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (acceptedTerms) ElectricBlue else NavyCardLight
-                ),
-                shape = RoundedCornerShape(16.dp),
-                enabled = acceptedTerms
+                colors = ButtonDefaults.buttonColors(containerColor = ElectricBlue),
+                shape = RoundedCornerShape(16.dp)
             ) {
                 Text(
                     "Create Account",
