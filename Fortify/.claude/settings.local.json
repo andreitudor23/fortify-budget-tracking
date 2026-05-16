@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\" -Recurse -Force)",
+      "Bash(Select-Object -Property FullName, PSIsContainer)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\risk\\\\RiskScreen.kt\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\tips\\\\TipsScreen.kt\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\auth\\\\ForgotPasswordScreen.kt\")",
+      "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\auth\\\\EmailVerificationScreen.kt\")",
+      "Bash(Remove-Item \"C:\\\\Users\\\\andry\\\\StudioProjects\\\\fortify-budget-tracking\\\\Fortify\\\\app\\\\src\\\\main\\\\java\\\\com\\\\echipappa\\\\fortify\\\\ui\\\\auth\\\\BiometricScreen.kt\")",
+      "Bash(Write-Output \"Deleted\")",
+      "Bash(claude doctor *)",
+      "PowerShell(claude doctor *)",
+      "Bash(Test-Path *)"
+    ]
+  }
+}
