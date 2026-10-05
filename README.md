@@ -1,4 +1,4 @@
-# Fortify 🛡️
+# Fortify 
 
 A clean, minimal Android app for tracking your digital subscriptions, managing connected accounts, and staying on top of your monthly spending — all in one place.
 
@@ -6,12 +6,12 @@ A clean, minimal Android app for tracking your digital subscriptions, managing c
 
 ## Features
 
-- 🔐 **Authentication** — Register and log in with email & password, stored securely on-device
-- 📊 **Dashboard** — Overview of monthly costs, active subscriptions, and connected accounts
-- 💳 **Subscriptions** — Track recurring payments with billing date, monthly cost, and usage status
-- 👤 **Accounts** — Manage digital accounts across platforms with tags (duplicate, inactive, at-risk)
-- ➕ **Add Account** — Manually add services or pick from a list of popular platforms
-- ⚙️ **Settings** — View logged-in email and reset all app data
+-  **Authentication** — Register and log in with email & password, stored securely on-device
+-  **Dashboard** — Overview of monthly costs, active subscriptions, and connected accounts
+-  **Subscriptions** — Track recurring payments with billing date, monthly cost, and usage status
+-  **Accounts** — Manage digital accounts across platforms with tags (duplicate, inactive, at-risk)
+-  **Add Account** — Manually add services or pick from a list of popular platforms
+-  **Settings** — View logged-in email and reset all app data
 
 ---
 
